@@ -1,0 +1,21 @@
+import { create } from 'zustand'
+
+// const useQueriesState = create(() => ({ fetchedQueries: new Map<string, boolean>() }))
+
+// const useQueriesState2 = create<QueriesState>()((set) => ({
+//     fetchedQueries: new Set<string>(['posts']),
+//     add: (fetchedQuery: string) => set((prev) => new Set(prev.fetchedQueries).add(fetchedQuery)),
+// }))
+//const useQueriesStateWithSet = create(() => ({ fetchedQueries: new Set<string>() }))
+
+type QueriesState = {
+    fetchedQueries: Map<string, boolean>,
+    set: (hashKey:string, isFetched:boolean) => void
+}
+
+const useQueriesState = create<QueriesState>()((set) => ({
+    fetchedQueries: new Map<string,boolean>(),
+    set: (hashKey:string, isFetched:boolean) => set((prev) => ({fetchedQueries: new Map(prev.fetchedQueries).set(hashKey, isFetched)}))
+}))
+
+export default useQueriesState

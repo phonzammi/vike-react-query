@@ -4,8 +4,6 @@ import type { Movie, MovieDetails } from "../types";
 
 
 export default async function onBeforeRender() {
-  // console.log("on before render", queryClient.getQueryData(['posts']))
-
   const movies = await getStarWarsMovies();
   return {
     pageContext: {

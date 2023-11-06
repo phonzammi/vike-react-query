@@ -1,10 +1,8 @@
 import { DehydratedState } from "@tanstack/react-query"
-
 declare global {
   namespace Vike {
     interface PageContext {
       dehydratedState: DehydratedState
-
     }
   }
 
@@ -12,4 +10,4 @@ declare global {
 
 
 // Tell TypeScript this file isn't an ambient module
-export {}
+export { }

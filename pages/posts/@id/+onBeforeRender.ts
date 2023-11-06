@@ -1,27 +1,43 @@
-import { QueryClient, dehydrate } from "@tanstack/react-query";
-import { postKeys } from "../queries";
+import { QueryClient, dehydrate, hashKey } from "@tanstack/react-query";
 import { PageContextBuiltInServer } from "vike/types";
+import { postsQueries } from "../postsQueries";
+import useQueriesState from "../../../stores/queriesState";
 
 export default async function onBeforeRender(pageContext: PageContextBuiltInServer) {
-    const { id } = pageContext.routeParams
-    const queryClient = new QueryClient({
-        defaultOptions: {
-            queries: {
-                gcTime: 5000
+    let title = "Post Detail";
+    const fetchedQueries = useQueriesState.getState().fetchedQueries
+    const { isClientSideNavigation, routeParams: { id } } = pageContext
+
+    if (isClientSideNavigation === false || fetchedQueries.has(hashKey(postsQueries.detail(id).queryKey).valueOf()) === false) {
+        console.log('posts/id/+onBeforeRender is fetcing... id : ', id)
+        const queryClient = new QueryClient({
+            defaultOptions: {
+                queries: {
+                    gcTime: 5000
+                }
+            }
+        })
+
+        const post = await queryClient.fetchQuery(postsQueries.detail(id))
+        const dehydratedState = dehydrate(queryClient)
+        title = post.title
+        return {
+            pageContext: {
+                dehydratedState,
+                pageProps: {
+                    id
+                },
+                title
             }
         }
-    })
-
-    const post = await queryClient.fetchQuery(postKeys.detail(id))
-    const dehydratedState = dehydrate(queryClient)
+    }
 
     return {
         pageContext: {
-            dehydratedState,
             pageProps: {
                 id
             },
-            title: post.title || "Post Detail"
+            title
         }
     }
 }

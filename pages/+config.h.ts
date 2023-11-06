@@ -16,9 +16,9 @@ export default {
   favicon: logoUrl,
   extends: vikeReact,
   passToClient: ['dehydratedState'],
-  // meta: {
-  //   onBeforeRender: {
-  //     env: 'server-and-client'
-  //   }
-  // }
+  meta: {
+    onBeforeRender: {
+      env: 'server-and-client'
+    }
+  }
 } satisfies Config;

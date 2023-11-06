@@ -1,8 +1,20 @@
-import React from 'react'
-import { usePostsQuery } from '../queries';
+import React, { useEffect, useState } from 'react'
+import { postsQueries, usePostsQuery } from '../postsQueries'
+import { hashKey } from '@tanstack/query-core'
+import useQueriesState from '../../../stores/queriesState'
 
 const Page = () => {
+    const [hashedKey] = useState(() => hashKey(postsQueries.list.queryKey))
+    const setIsFetched = useQueriesState((state) => state.set)
+
     const postsQuery = usePostsQuery()
+
+    useEffect(
+        () => {
+            setIsFetched(hashedKey, postsQuery.isFetched)
+        },
+        [setIsFetched, hashedKey, postsQuery.isFetched]
+    )
 
     return (
         <>
