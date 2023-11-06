@@ -5,10 +5,10 @@ import useQueriesState from "../../../stores/queriesState";
 
 export default async function onBeforeRender(pageContext: PageContextBuiltInServer) {
     let title = "Post Detail";
-    const fetchedQueries = useQueriesState.getState().fetchedQueries
+    const knownQueries = useQueriesState.getState().knownQueries
     const { routeParams: { id } } = pageContext
 
-    if (fetchedQueries.has(hashKey(postsQueries.detail(id).queryKey).valueOf()) === false) {
+    if (knownQueries.has(hashKey(postsQueries.detail(id).queryKey).valueOf()) === false) {
         // We haven't started fetching the post with this id yet.
 
         // Note: this gets executed only once per post id and browser session, namely the

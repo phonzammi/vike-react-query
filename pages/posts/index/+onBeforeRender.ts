@@ -5,9 +5,9 @@ import useQueriesState from "../../../stores/queriesState";
 
 export default async function onBeforeRender() {
     let title = 'Posts List';
-    const fetchedQueries = useQueriesState.getState().fetchedQueries
+    const knownQueries = useQueriesState.getState().knownQueries
 
-    if (fetchedQueries.has(hashKey(postsQueries.list.queryKey).valueOf()) === false) {
+    if (knownQueries.has(hashKey(postsQueries.list.queryKey).valueOf()) === false) {
         // We haven't started fetching the list of posts yet.
 
         // Note: this gets executed only once per browser session, namely the
