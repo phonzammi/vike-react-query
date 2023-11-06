@@ -9,6 +9,13 @@ export default async function onBeforeRender(pageContext: PageContextBuiltInServ
     const { routeParams: { id } } = pageContext
 
     if (fetchedQueries.has(hashKey(postsQueries.detail(id).queryKey).valueOf()) === false) {
+        // We haven't started fetching the post with this id yet.
+
+        // Note: this gets executed only once per post id and browser session, namely the
+        // first time this post gets visited. If this visit happens coming from
+        // another page through client-side navigation, this gets executed on
+        // the client. Otherwise it gets executed on the server.
+
         console.log('posts/id/+onBeforeRender is fetching... id : ', id)
         const queryClient = new QueryClient({
             defaultOptions: {
