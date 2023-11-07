@@ -4,10 +4,13 @@ import { postsQueries } from "../postsQueries";
 import useQueriesState from "../../../stores/queriesState";
 
 export default async function onBeforeRender(pageContext: PageContextBuiltInServer) {
-    let title = "Post Detail";
-    const knownQueries = useQueriesState.getState().knownQueries
+    const { knownQueries, knownTitles } = useQueriesState.getState()
+
     const { routeParams: { id } } = pageContext
     const queryKey = hashKey(postsQueries.detail(id).queryKey)
+
+    // Get custom title based on knownTitles, (known after the query is fetched).
+    let title = knownTitles.get(queryKey) ?? "Post Detail";
 
     if (!knownQueries.get(queryKey)) {
         // We haven't started fetching the post with this id yet.
@@ -28,15 +31,21 @@ export default async function onBeforeRender(pageContext: PageContextBuiltInServ
         })
 
         const post = await queryClient.fetchQuery(postsQueries.detail(id))
+
+        // Set custom title to knownTitles after the data is fetched with queryKey as the key.
+        useQueriesState.setState((prev) => ({
+            knownTitles: new Map(prev.knownTitles).set(queryKey, post.title)
+        }))
+
         const dehydratedState = dehydrate(queryClient)
-        title = post.title
+
         return {
             pageContext: {
                 dehydratedState,
                 pageProps: {
                     id
                 },
-                title
+                title: post.title
             }
         }
     }

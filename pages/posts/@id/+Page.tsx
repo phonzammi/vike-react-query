@@ -8,10 +8,13 @@ const Page = ({ id }: { id: string }) => {
     const postQuery = usePostQuery(id)
 
     useEffect(() => {
-        useQueriesState.setState((prev) => ({
-            knownQueries: prev.knownQueries.set(hashedKey, postQuery.isFetched),
-        }))
-    }, [hashedKey, postQuery.isFetched])
+        if (postQuery.isSuccess) {
+            useQueriesState.setState((prev) => ({
+                knownQueries: prev.knownQueries.set(hashedKey, postQuery.isFetched),
+                knownTitles: prev.knownTitles.set(hashedKey, postQuery.data.title)
+            }))
+        }
+    }, [hashedKey, postQuery])
 
 
     if (postQuery.isError) return <h3>Error {postQuery.error.message}</h3>
