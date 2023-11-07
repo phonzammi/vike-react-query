@@ -1,15 +1,26 @@
 import { QueryClient, dehydrate, hashKey } from "@tanstack/react-query";
-import { PageContext } from "vike/types";
 
 import { postsQueries } from "../postsQueries";
 import useQueriesState from "../../../stores/queriesState";
 
-export default async function onBeforeRender({ isClientSideNavigation }: PageContext) {
+export default async function onBeforeRender() {
     let title = 'Posts List';
-    const fetchedQueries = useQueriesState.getState().fetchedQueries
+    const knownQueries = useQueriesState.getState().knownQueries
 
-    if (isClientSideNavigation === false || fetchedQueries.has(hashKey(postsQueries.list.queryKey).valueOf()) === false) {
+    const queryKey = hashKey(postsQueries.list.queryKey).valueOf()
+    if (knownQueries.has(queryKey) === false) {
+        // We haven't started fetching the list of posts yet.
+
+        // Note: this gets executed only once per browser session, namely the
+        // first time this page gets visited. If this visit happens coming from
+        // another page through client-side navigation, this gets executed on
+        // the client. Otherwise it gets executed on the server.
+
         console.log('posts/index/+onBeforeRender is fetching ...')
+
+        // Mark the query as started:
+        knownQueries.set(queryKey, /*isFetched*/ false)
+
         const queryClient = new QueryClient({
             defaultOptions: {
                 queries: {

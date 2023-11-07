@@ -5,11 +5,23 @@ import useQueriesState from "../../../stores/queriesState";
 
 export default async function onBeforeRender(pageContext: PageContextBuiltInServer) {
     let title = "Post Detail";
-    const fetchedQueries = useQueriesState.getState().fetchedQueries
-    const { isClientSideNavigation, routeParams: { id } } = pageContext
+    const knownQueries = useQueriesState.getState().knownQueries
+    const { routeParams: { id } } = pageContext
 
-    if (isClientSideNavigation === false || fetchedQueries.has(hashKey(postsQueries.detail(id).queryKey).valueOf()) === false) {
-        console.log('posts/id/+onBeforeRender is fetcing... id : ', id)
+    const queryKey = hashKey(postsQueries.detail(id).queryKey).valueOf()
+    if (knownQueries.has(queryKey) === false) {
+        // We haven't started fetching the post with this id yet.
+
+        // Note: this gets executed only once per post id and browser session, namely the
+        // first time this post gets visited. If this visit happens coming from
+        // another page through client-side navigation, this gets executed on
+        // the client. Otherwise it gets executed on the server.
+
+        console.log('posts/id/+onBeforeRender is fetching... id : ', id)
+
+        // Mark the query as started:
+        knownQueries.set(queryKey, /*isFetched*/ false)
+
         const queryClient = new QueryClient({
             defaultOptions: {
                 queries: {
