@@ -4,16 +4,16 @@ import { hashKey } from '@tanstack/query-core'
 import useQueriesState from '../../../stores/queriesState'
 
 const Page = () => {
-    const [hashedKey] = useState(() => hashKey(postsQueries.list.queryKey))
+    const [hashedQueryKey] = useState(() => hashKey(postsQueries.list.queryKey))
     const postsQuery = usePostsQuery()
 
     useEffect(() => {
         useQueriesState.setState((prev) => ({
             // See https://docs.pmnd.rs/zustand/guides/maps-and-sets-usage
-            // knownQueries: new Map(prev.knownQueries).set(hashedKey, postsQuery.isFetched), //Triggers Rerender
-            knownQueries: prev.knownQueries.set(hashedKey, postsQuery.isFetched), /// Doesn't Trigger Rerender
+            // knownQueries: new Map(prev.knownQueries).set(hashedQueryKey, postsQuery.isFetched), //Triggers Rerender
+            knownQueries: prev.knownQueries.set(hashedQueryKey, postsQuery.isFetched), /// Doesn't Trigger Rerender
         }))
-    }, [hashedKey, postsQuery.isFetched])
+    }, [hashedQueryKey, postsQuery.isFetched])
 
     return (
         <>

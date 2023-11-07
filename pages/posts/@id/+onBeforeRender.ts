@@ -7,12 +7,12 @@ export default async function onBeforeRender(pageContext: PageContextBuiltInServ
     const { knownQueries, knownTitles } = useQueriesState.getState()
 
     const { routeParams: { id } } = pageContext
-    const queryKey = hashKey(postsQueries.detail(id).queryKey)
+    const hashedQueryKey = hashKey(postsQueries.detail(id).queryKey)
 
     // Get custom title based on knownTitles, (known after the query is fetched).
-    let title = knownTitles.get(queryKey) ?? "Post Detail";
+    let title = knownTitles.get(hashedQueryKey) ?? "Post Detail";
 
-    if (!knownQueries.get(queryKey)) {
+    if (!knownQueries.get(hashedQueryKey)) {
         // We haven't started fetching the post with this id yet.
 
         // Note: this gets executed only once per post id and browser session, namely the
@@ -34,7 +34,7 @@ export default async function onBeforeRender(pageContext: PageContextBuiltInServ
 
         // Set custom title to knownTitles after the data is fetched with queryKey as the key.
         useQueriesState.setState((prev) => ({
-            knownTitles: new Map(prev.knownTitles).set(queryKey, post.title)
+            knownTitles: new Map(prev.knownTitles).set(hashedQueryKey, post.title)
         }))
 
         const dehydratedState = dehydrate(queryClient)

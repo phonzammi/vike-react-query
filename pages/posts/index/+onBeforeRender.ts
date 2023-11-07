@@ -6,16 +6,15 @@ import useQueriesState from "../../../stores/queriesState";
 export default async function onBeforeRender() {
     let title = 'Posts List';
     const knownQueries = useQueriesState.getState().knownQueries
-    const queryKey = hashKey(postsQueries.list.queryKey)
+    const hashedQueryKey = hashKey(postsQueries.list.queryKey)
 
-    if (!knownQueries.get(queryKey)) {
+    if (!knownQueries.get(hashedQueryKey)) {
         // We haven't started fetching the list of posts yet.
 
         // Note: this gets executed only once per browser session, namely the
         // first time this page gets visited. If this visit happens coming from
         // another page through client-side navigation, this gets executed on
         // the client. Otherwise it gets executed on the server.
-
         console.log('posts/index/+onBeforeRender is fetching ...')
 
         const queryClient = new QueryClient({
