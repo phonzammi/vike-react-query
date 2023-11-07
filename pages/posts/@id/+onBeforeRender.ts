@@ -7,9 +7,9 @@ export default async function onBeforeRender(pageContext: PageContextBuiltInServ
     let title = "Post Detail";
     const knownQueries = useQueriesState.getState().knownQueries
     const { routeParams: { id } } = pageContext
+    const queryKey = hashKey(postsQueries.detail(id).queryKey)
 
-    const queryKey = hashKey(postsQueries.detail(id).queryKey).valueOf()
-    if (knownQueries.has(queryKey) === false) {
+    if (!knownQueries.get(queryKey)) {
         // We haven't started fetching the post with this id yet.
 
         // Note: this gets executed only once per post id and browser session, namely the
@@ -18,9 +18,6 @@ export default async function onBeforeRender(pageContext: PageContextBuiltInServ
         // the client. Otherwise it gets executed on the server.
 
         console.log('posts/id/+onBeforeRender is fetching... id : ', id)
-
-        // Mark the query as started:
-        knownQueries.set(queryKey, /*isFetched*/ false)
 
         const queryClient = new QueryClient({
             defaultOptions: {
