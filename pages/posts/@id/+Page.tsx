@@ -5,15 +5,13 @@ import useQueriesState from '../../../stores/queriesState'
 
 const Page = ({ id }: { id: string }) => {
     const [hashedKey] = useState(() => hashKey(postsQueries.detail(id).queryKey))
-    const setIsFetched = useQueriesState((state) => state.set)
     const postQuery = usePostQuery(id)
 
-    useEffect(
-        () => {
-            setIsFetched(hashedKey, postQuery.isFetched)
-        },
-        [setIsFetched, hashedKey, postQuery.isFetched]
-    )
+    useEffect(() => {
+        useQueriesState.setState((prev) => ({
+            knownQueries: prev.knownQueries.set(hashedKey, postQuery.isFetched),
+        }))
+    }, [hashedKey, postQuery.isFetched])
 
 
     if (postQuery.isError) return <h3>Error {postQuery.error.message}</h3>

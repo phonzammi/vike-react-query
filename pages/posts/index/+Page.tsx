@@ -5,16 +5,15 @@ import useQueriesState from '../../../stores/queriesState'
 
 const Page = () => {
     const [hashedKey] = useState(() => hashKey(postsQueries.list.queryKey))
-    const setIsFetched = useQueriesState((state) => state.set)
-
     const postsQuery = usePostsQuery()
 
-    useEffect(
-        () => {
-            setIsFetched(hashedKey, postsQuery.isFetched)
-        },
-        [setIsFetched, hashedKey, postsQuery.isFetched]
-    )
+    useEffect(() => {
+        useQueriesState.setState((prev) => ({
+            // See https://docs.pmnd.rs/zustand/guides/maps-and-sets-usage
+            // knownQueries: new Map(prev.knownQueries).set(hashedKey, postsQuery.isFetched), //Triggers Rerender
+            knownQueries: prev.knownQueries.set(hashedKey, postsQuery.isFetched), /// Doesn't Trigger Rerender
+        }))
+    }, [hashedKey, postsQuery.isFetched])
 
     return (
         <>
