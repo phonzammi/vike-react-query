@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { postsQueries, usePostsQuery } from '../postsQueries'
-import { hashKey } from '@tanstack/query-core'
+import { hashKey } from '@tanstack/react-query'
 import useQueriesState from '../../../stores/queriesState'
 
 const Page = () => {
