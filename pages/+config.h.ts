@@ -18,7 +18,7 @@ export default {
   passToClient: ['dehydratedState'],
   meta: {
     onBeforeRender: {
-      env: 'server-and-client'
+      env: { server: true, client: true }
     }
   }
 } satisfies Config;

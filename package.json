@@ -32,8 +32,8 @@
     "part-regex": "^0.1.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "vike": "^0.4.144",
-    "vike-react": "^0.3.0",
+    "vike": "^0.4.147",
+    "vike-react": "^0.3.4",
     "zustand": "^4.4.6"
   }
 }
